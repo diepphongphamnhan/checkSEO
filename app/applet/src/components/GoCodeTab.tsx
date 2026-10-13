@@ -78,19 +78,19 @@ export const GoCodeTab: React.FC = () => {
         </button>
       </div>
 
-      {/* Troubleshooting "checksum mismatch / SECURITY ERROR" Box */}
+      {/* Troubleshooting "invalid version / cdproto / checksum mismatch" Box */}
       <div className="bg-amber-950/40 border border-amber-800/80 rounded-xl p-4.5 text-xs">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-2.5">
             <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
             <div>
               <h3 className="font-bold text-amber-200 text-sm">
-                Xử Lý Lỗi: <code className="bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-300 font-mono text-xs">checksum mismatch / SECURITY ERROR</code>
+                Xử Lý Lỗi: <code className="bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-300 font-mono text-xs">invalid version: unknown revision a4e83f0b8045</code>
               </h3>
               <p className="text-amber-200/80 mt-1 leading-relaxed">
-                <b>Nguyên nhân:</b> File <code>go.sum</code> hiện tại chứa mã băm không khớp với mã nguồn chính thức tải về từ proxy Go của Google.
+                <b>Nguyên nhân:</b> File <code>go.mod</code> trước đó bị ghim một commit hash gián tiếp (<code>// indirect</code>) không tồn tại trên repository của <code>cdproto</code>.
                 <br />
-                <b>Cách khắc phục ngay lập tức:</b> Xóa file <code>go.sum</code> cũ và chạy <code>go mod tidy</code> để Go tự động tải mã băm chuẩn xác từ <code>sum.golang.org</code>:
+                <b>Khắc phục:</b> Ghi đè file <code>go.mod</code> tinh gọn chỉ chứa 5 package chính và chạy <code>go mod tidy</code> để Go tự động kéo các dependency gián tiếp hợp lệ từ proxy chính thức.
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-amber-700/60 font-mono text-amber-300 text-xs">
