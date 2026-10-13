@@ -44,6 +44,13 @@ func NewAppUI(storage *db.Storage) *AppUI {
 }
 
 func (ui *AppUI) Run() {
+	helpMenu := fyne.NewMenu("Trợ giúp",
+		fyne.NewMenuItem("Hướng dẫn tương tác từng bước", func() {
+			ui.showWalkthroughDialog()
+		}),
+	)
+	ui.Window.SetMainMenu(fyne.NewMainMenu(helpMenu))
+
 	tabs := container.NewAppTabs(
 		container.NewTabItemWithIcon("Phân tích SEO", theme.SearchIcon(), ui.buildSEOTab()),
 		container.NewTabItemWithIcon("Kịch bản UX/UI", theme.MediaPlayIcon(), ui.buildUXTab()),
@@ -54,6 +61,84 @@ func (ui *AppUI) Run() {
 	tabs.SetTabLocation(container.TabLocationTop)
 	ui.Window.SetContent(tabs)
 	ui.Window.ShowAndRun()
+}
+
+// showWalkthroughDialog hiển thị hộp thoại hướng dẫn từng bước (Interactive Tour) trên Fyne Desktop
+func (ui *AppUI) showWalkthroughDialog() {
+	steps := []struct {
+		Title string
+		Desc  string
+	}{
+		{
+			Title: "Bước 1: Nhập URL & Phân tích SEO",
+			Desc:  "Nhập đường dẫn trang web vào ô tìm kiếm, bấm 'Bắt đầu Phân tích SEO'. Chromedp và Google PageSpeed sẽ đo Core Web Vitals và crawl cấu trúc On-page.",
+		},
+		{
+			Title: "Bước 2: Xem Core Web Vitals & Đề xuất",
+			Desc:  "Kiểm tra các chỉ số LCP, CLS, FCP, INP và danh sách giải pháp khuyến nghị kỹ thuật bằng tiếng Việt với mức độ ưu tiên rõ ràng.",
+		},
+		{
+			Title: "Bước 3: Chạy Kịch bản UX/UI Step Tracking",
+			Desc:  "Chuyển sang Tab Kịch bản UX/UI, bấm 'Chạy Kịch Bản Kiểm Thử UX' để Chromium đo lường độ trễ (latency ms) và gán 6 Tag tiêu chí chuẩn mực.",
+		},
+		{
+			Title: "Bước 4: Quản lý SQLite Cục bộ",
+			Desc:  "Lưu các phiên quét vào cơ sở dữ liệu SQLite local qua GORM AutoMigrate để theo dõi tiến trình và so sánh hiệu năng theo thời gian.",
+		},
+		{
+			Title: "Bước 5: Xuất Báo cáo Excel 3 Sheet",
+			Desc:  "Xuất file .xlsx chuẩn Excelize với 3 Sheet: Tổng quan, Chi tiết SEO, và Kịch bản UX Tracking được tạo khuôn màu sắc chuyên nghiệp.",
+		},
+	}
+
+	stepIdx := 0
+	titleLabel := widget.NewLabelWithStyle(steps[0].Title, fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
+	descLabel := widget.NewLabel(steps[0].Desc)
+	descLabel.Wrapping = fyne.TextWrapWord
+	counterLabel := widget.NewLabel(fmt.Sprintf("Bước 1 / %d", len(steps)))
+
+	var d dialog.Dialog
+
+	updateContent := func() {
+		titleLabel.SetText(steps[stepIdx].Title)
+		descLabel.SetText(steps[stepIdx].Desc)
+		counterLabel.SetText(fmt.Sprintf("Bước %d / %d", stepIdx+1, len(steps)))
+	}
+
+	nextBtn := widget.NewButton("Tiếp theo", func() {
+		if stepIdx < len(steps)-1 {
+			stepIdx++
+			updateContent()
+		} else {
+			d.Hide()
+		}
+	})
+
+	prevBtn := widget.NewButton("Quay lại", func() {
+		if stepIdx > 0 {
+			stepIdx--
+			updateContent()
+		}
+	})
+
+	skipBtn := widget.NewButton("Bỏ qua", func() {
+		d.Hide()
+	})
+
+	btnBox := container.NewHBox(skipBtn, prevBtn, nextBtn)
+
+	dialogContent := container.NewVBox(
+		counterLabel,
+		titleLabel,
+		widget.NewSeparator(),
+		descLabel,
+		widget.NewSeparator(),
+		container.NewCenter(btnBox),
+	)
+
+	d = dialog.NewCustom("Hướng Dẫn Sử Dụng Tương Tác", "Đóng", dialogContent, ui.Window)
+	d.Resize(fyne.NewSize(520, 260))
+	d.Show()
 }
 
 // buildSEOTab tạo giao diện tab Phân tích SEO

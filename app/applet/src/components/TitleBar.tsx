@@ -1,9 +1,10 @@
 import React from 'react';
-import { Download, FileSpreadsheet, Code2, Monitor, ShieldCheck, Database } from 'lucide-react';
+import { Download, FileSpreadsheet, Code2, Monitor, ShieldCheck, Database, Compass } from 'lucide-react';
 
 interface TitleBarProps {
   onExportExcel: () => void;
   onDownloadGoZip: () => void;
+  onOpenTour: () => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
@@ -11,6 +12,7 @@ interface TitleBarProps {
 export const TitleBar: React.FC<TitleBarProps> = ({
   onExportExcel,
   onDownloadGoZip,
+  onOpenTour,
   setActiveTab,
 }) => {
   return (
@@ -34,7 +36,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
         </div>
 
         {/* Core Tech Stack Badges */}
-        <div className="hidden md:flex items-center gap-2 text-[11px] text-slate-400">
+        <div className="hidden lg:flex items-center gap-2 text-[11px] text-slate-400">
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-300">
             <ShieldCheck className="w-3 h-3 text-emerald-400" /> fyne.io/fyne/v2
           </span>
@@ -51,25 +53,37 @@ export const TitleBar: React.FC<TitleBarProps> = ({
 
         {/* Quick action buttons */}
         <div className="flex items-center gap-2">
+          {/* Photoshop-inspired Interactive Guide Button */}
+          <button
+            onClick={onOpenTour}
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 transition-all cursor-pointer shadow-sm shadow-amber-950/60"
+            title="Bật Hướng dẫn sử dụng tương tác từng bước (Interactive Tour)"
+          >
+            <Compass className="w-3.5 h-3.5 text-amber-400 animate-spin-slow" />
+            <span>Hướng dẫn</span>
+          </button>
+
           <button
             onClick={onExportExcel}
-            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30 border border-emerald-500/30 transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30 border border-emerald-500/30 transition-colors cursor-pointer"
             title="Xuất file Excel .xlsx 3 Sheet"
           >
             <FileSpreadsheet className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Xuất Excel (.xlsx)</span>
           </button>
+
           <button
             onClick={onDownloadGoZip}
-            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded bg-cyan-600/20 text-cyan-300 hover:bg-cyan-600/30 border border-cyan-500/30 transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded bg-cyan-600/20 text-cyan-300 hover:bg-cyan-600/30 border border-cyan-500/30 transition-colors cursor-pointer"
             title="Tải trọn bộ mã nguồn Go để chạy trên máy tính"
           >
             <Download className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Tải Mã Go (.zip)</span>
           </button>
+
           <button
             onClick={() => setActiveTab('go-code')}
-            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 transition-colors cursor-pointer"
             title="Xem toàn bộ mã nguồn Go"
           >
             <Code2 className="w-3.5 h-3.5 text-amber-400" />

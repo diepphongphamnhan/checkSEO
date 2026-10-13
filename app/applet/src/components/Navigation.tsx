@@ -1,17 +1,19 @@
 import React from 'react';
-import { Search, PlayCircle, Database, FileSpreadsheet, Code2, Globe } from 'lucide-react';
+import { Search, PlayCircle, Database, FileSpreadsheet, Code2, Globe, Compass } from 'lucide-react';
 import { AuditSession } from '../types/analyzer';
 
 interface NavigationProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   currentSession: AuditSession | null;
+  onOpenTour?: () => void;
 }
 
 export const Navigation: React.FC<NavigationProps> = ({
   activeTab,
   setActiveTab,
   currentSession,
+  onOpenTour,
 }) => {
   const tabs = [
     {
@@ -61,7 +63,7 @@ export const Navigation: React.FC<NavigationProps> = ({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2.5 px-3.5 py-2 rounded-lg font-medium transition-all text-xs sm:text-sm whitespace-nowrap ${
+              className={`flex items-center gap-2.5 px-3.5 py-2 rounded-lg font-medium transition-all text-xs sm:text-sm whitespace-nowrap cursor-pointer ${
                 isActive
                   ? 'bg-slate-800 text-cyan-300 shadow-sm border border-slate-700/80 shadow-cyan-950/50'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -86,22 +88,35 @@ export const Navigation: React.FC<NavigationProps> = ({
         })}
       </div>
 
-      {currentSession && (
-        <div className="hidden xl:flex items-center gap-2 text-xs text-slate-400 bg-slate-950/60 px-3 py-1.5 rounded-md border border-slate-800">
-          <Globe className="w-3.5 h-3.5 text-cyan-400" />
-          <span className="truncate max-w-[200px] text-slate-300 font-mono" title={currentSession.url}>
-            {currentSession.url}
-          </span>
-          <span className="text-slate-600">|</span>
-          <span className="text-emerald-400 font-semibold font-mono">
-            SEO: {currentSession.overallSeoScore}
-          </span>
-          <span className="text-slate-600">|</span>
-          <span className="text-cyan-400 font-semibold font-mono">
-            UX: {currentSession.overallUxScore}
-          </span>
-        </div>
-      )}
+      <div className="flex items-center gap-2">
+        {currentSession && (
+          <div className="hidden xl:flex items-center gap-2 text-xs text-slate-400 bg-slate-950/60 px-3 py-1.5 rounded-md border border-slate-800">
+            <Globe className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="truncate max-w-[200px] text-slate-300 font-mono" title={currentSession.url}>
+              {currentSession.url}
+            </span>
+            <span className="text-slate-600">|</span>
+            <span className="text-emerald-400 font-semibold font-mono">
+              SEO: {currentSession.overallSeoScore}
+            </span>
+            <span className="text-slate-600">|</span>
+            <span className="text-cyan-400 font-semibold font-mono">
+              UX: {currentSession.overallUxScore}
+            </span>
+          </div>
+        )}
+
+        {onOpenTour && (
+          <button
+            onClick={onOpenTour}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30 transition-colors cursor-pointer"
+            title="Bật Hướng dẫn tương tác từng bước"
+          >
+            <Compass className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden sm:inline">Hướng dẫn</span>
+          </button>
+        )}
+      </div>
     </nav>
   );
 };
