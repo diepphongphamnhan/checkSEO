@@ -1,0 +1,6 @@
+{
+  "name": "SEO & UX/UI Analyzer Desktop",
+  "description": "Ứng dụng Desktop Golang phân tích SEO bằng Google PageSpeed & Chromedp, kịch bản UX Step Tracking, cơ sở dữ liệu SQLite và xuất báo cáo Excel chuyên nghiệp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
