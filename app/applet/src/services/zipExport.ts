@@ -621,8 +621,8 @@ func ExportAuditReportToExcel(session *models.AuditSession, filePath string) err
 	sheet3 := "Kịch bản UX-UI (UX Tracking)"
 
 	_ = f.SetSheetName(f.GetSheetName(0), sheet1)
-	_ = f.NewSheet(sheet2)
-	_ = f.NewSheet(sheet3)
+	_, _ = f.NewSheet(sheet2)
+	_, _ = f.NewSheet(sheet3)
 
 	headerStyle, _ := f.NewStyle(&excelize.Style{
 		Font: &excelize.Font{Bold: true, Color: "FFFFFF", Size: 11},

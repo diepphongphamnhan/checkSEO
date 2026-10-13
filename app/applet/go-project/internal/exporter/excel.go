@@ -26,8 +26,8 @@ func ExportAuditReportToExcel(session *models.AuditSession, filePath string) err
 	sheet3Name := "Kịch bản UX-UI (UX Tracking)"
 
 	_ = f.SetSheetName(defaultSheet, sheet1Name)
-	_ = f.NewSheet(sheet2Name)
-	_ = f.NewSheet(sheet3Name)
+	_, _ = f.NewSheet(sheet2Name)
+	_, _ = f.NewSheet(sheet3Name)
 
 	// Tạo Style màu Header chuẩn chuyên nghiệp
 	headerStyle, _ := f.NewStyle(&excelize.Style{
