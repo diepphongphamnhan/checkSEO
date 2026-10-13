@@ -10,19 +10,27 @@ import {
   ShieldCheck,
   Cpu,
   Layers,
-  ExternalLink,
+  AlertCircle,
+  HelpCircle,
 } from 'lucide-react';
 import { GO_PROJECT_FILES, GoFileItem, downloadGoProjectZip } from '../services/zipExport';
 
 export const GoCodeTab: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<GoFileItem>(GO_PROJECT_FILES[1]); // default to main.go
+  const [selectedFile, setSelectedFile] = useState<GoFileItem>(GO_PROJECT_FILES[1]); // default to go.sum or main.go
   const [copied, setCopied] = useState<boolean>(false);
   const [isZipping, setIsZipping] = useState<boolean>(false);
+  const [cmdCopied, setCmdCopied] = useState<boolean>(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(selectedFile.content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyCmd = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCmdCopied(true);
+    setTimeout(() => setCmdCopied(false), 2000);
   };
 
   const handleDownloadZip = async () => {
@@ -69,6 +77,36 @@ export const GoCodeTab: React.FC = () => {
             </>
           )}
         </button>
+      </div>
+
+      {/* Troubleshooting "missing go.sum entry" Box */}
+      <div className="bg-amber-950/40 border border-amber-800/80 rounded-xl p-4.5 text-xs">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start gap-2.5">
+            <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-bold text-amber-200 text-sm">
+                Xử Lý Lỗi: <code className="bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-300 font-mono text-xs">missing go.sum entry for module providing package...</code>
+              </h3>
+              <p className="text-amber-200/80 mt-1 leading-relaxed">
+                Nguyên nhân: Trong hệ sinh thái Go Modules, khi mã nguồn chứa các lệnh <code>import</code> nhưng file <code>go.sum</code> chưa được đồng bộ hoặc chưa ghi nhận mã hash checksum bảo mật của các thư viện, Go compiler sẽ chặn build để bảo vệ an toàn.
+              </p>
+              <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                <span className="font-semibold text-amber-300">Cách khắc phục ngay lập tức (1 lệnh duy nhất):</span>
+                <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded border border-amber-700/60 font-mono text-amber-300">
+                  <span>go mod tidy</span>
+                  <button
+                    onClick={() => handleCopyCmd('go mod tidy')}
+                    className="ml-2 text-slate-400 hover:text-white"
+                    title="Sao chép lệnh"
+                  >
+                    {cmdCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Architecture Highlights & Library Mapping */}
@@ -150,17 +188,17 @@ export const GoCodeTab: React.FC = () => {
           <div className="mt-6 p-3 rounded-lg bg-slate-900 border border-slate-800 text-[11px]">
             <div className="flex items-center gap-1.5 text-slate-300 font-semibold mb-1.5">
               <Terminal className="w-3.5 h-3.5 text-amber-400" />
-              <span>Chạy trên máy cục bộ (Local):</span>
+              <span>3 Bước Chạy Chuẩn Trên Máy Cục Bộ:</span>
             </div>
             <pre className="p-2 rounded bg-slate-950 text-cyan-300 font-mono text-[10px] overflow-x-auto">
-{`# 1. Cài đặt thư viện
+{`# 1. Tải dependencies & tạo go.sum:
 go mod tidy
 
-# 2. Mở Desktop GUI Fyne
+# 2. Khởi chạy Desktop GUI Fyne v2:
 go run main.go
 
-# 3. Hoặc chạy dòng lệnh CLI
-go run main.go -cli -url https://example.com`}
+# 3. Hoặc chạy chế độ CLI Headless:
+go run main.go -cli -url https://tiki.vn -export report.xlsx`}
             </pre>
           </div>
         </div>
