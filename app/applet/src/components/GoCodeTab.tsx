@@ -10,13 +10,12 @@ import {
   ShieldCheck,
   Cpu,
   Layers,
-  AlertCircle,
-  HelpCircle,
+  AlertTriangle,
 } from 'lucide-react';
 import { GO_PROJECT_FILES, GoFileItem, downloadGoProjectZip } from '../services/zipExport';
 
 export const GoCodeTab: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<GoFileItem>(GO_PROJECT_FILES[1]); // default to go.sum or main.go
+  const [selectedFile, setSelectedFile] = useState<GoFileItem>(GO_PROJECT_FILES[1]); // default to main.go
   const [copied, setCopied] = useState<boolean>(false);
   const [isZipping, setIsZipping] = useState<boolean>(false);
   const [cmdCopied, setCmdCopied] = useState<boolean>(false);
@@ -79,25 +78,26 @@ export const GoCodeTab: React.FC = () => {
         </button>
       </div>
 
-      {/* Troubleshooting "missing go.sum entry" Box */}
+      {/* Troubleshooting "checksum mismatch / SECURITY ERROR" Box */}
       <div className="bg-amber-950/40 border border-amber-800/80 rounded-xl p-4.5 text-xs">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-2.5">
-            <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
             <div>
               <h3 className="font-bold text-amber-200 text-sm">
-                Xử Lý Lỗi: <code className="bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-300 font-mono text-xs">missing go.sum entry for module providing package...</code>
+                Xử Lý Lỗi: <code className="bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-300 font-mono text-xs">checksum mismatch / SECURITY ERROR</code>
               </h3>
               <p className="text-amber-200/80 mt-1 leading-relaxed">
-                Nguyên nhân: Trong hệ sinh thái Go Modules, khi mã nguồn chứa các lệnh <code>import</code> nhưng file <code>go.sum</code> chưa được đồng bộ hoặc chưa ghi nhận mã hash checksum bảo mật của các thư viện, Go compiler sẽ chặn build để bảo vệ an toàn.
+                <b>Nguyên nhân:</b> File <code>go.sum</code> hiện tại chứa mã băm không khớp với mã nguồn chính thức tải về từ proxy Go của Google.
+                <br />
+                <b>Cách khắc phục ngay lập tức:</b> Xóa file <code>go.sum</code> cũ và chạy <code>go mod tidy</code> để Go tự động tải mã băm chuẩn xác từ <code>sum.golang.org</code>:
               </p>
-              <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                <span className="font-semibold text-amber-300">Cách khắc phục ngay lập tức (1 lệnh duy nhất):</span>
-                <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded border border-amber-700/60 font-mono text-amber-300">
-                  <span>go mod tidy</span>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-lg border border-amber-700/60 font-mono text-amber-300 text-xs">
+                  <span>rm -f go.sum && go mod tidy</span>
                   <button
-                    onClick={() => handleCopyCmd('go mod tidy')}
-                    className="ml-2 text-slate-400 hover:text-white"
+                    onClick={() => handleCopyCmd('rm -f go.sum && go mod tidy')}
+                    className="ml-2 text-slate-400 hover:text-white cursor-pointer"
                     title="Sao chép lệnh"
                   >
                     {cmdCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
@@ -188,11 +188,11 @@ export const GoCodeTab: React.FC = () => {
           <div className="mt-6 p-3 rounded-lg bg-slate-900 border border-slate-800 text-[11px]">
             <div className="flex items-center gap-1.5 text-slate-300 font-semibold mb-1.5">
               <Terminal className="w-3.5 h-3.5 text-amber-400" />
-              <span>3 Bước Chạy Chuẩn Trên Máy Cục Bộ:</span>
+              <span>Chạy Chuẩn Trên Máy Cục Bộ:</span>
             </div>
             <pre className="p-2 rounded bg-slate-950 text-cyan-300 font-mono text-[10px] overflow-x-auto">
-{`# 1. Tải dependencies & tạo go.sum:
-go mod tidy
+{`# 1. Đồng bộ và sinh mã checksum chuẩn:
+rm -f go.sum && go mod tidy
 
 # 2. Khởi chạy Desktop GUI Fyne v2:
 go run main.go

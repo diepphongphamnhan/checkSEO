@@ -28,26 +28,6 @@ require (
 `,
   },
   {
-    path: 'go.sum',
-    name: 'go.sum',
-    folder: 'Gốc (Root)',
-    description: 'File checksum mã hóa của Go Modules. Đảm bảo toàn vẹn bảo mật và ngăn lỗi "missing go.sum entry". Được sinh tự động bởi lệnh "go mod tidy".',
-    content: `# Chạy lệnh sau trong thư mục dự án để tự động tải và tạo lại go.sum chuẩn xác nhất:
-# go mod tidy
-
-fyne.io/fyne/v2 v2.4.5 h1:d+wIqT8p3vO12c8XWfI5p7X8g6g2xV3lP9+mJ0kX+Y0=
-fyne.io/fyne/v2 v2.4.5/go.mod h1:7yVq+5x+XQJg1x0+vG1g2x3X4X5X6X7X8X9X0X1X2X3=
-github.com/chromedp/chromedp v0.9.5 h1:iK2vXWbZ7G8g3xV8k2m5l3+7j4k9l0m1n2o3p4q5r6s=
-github.com/chromedp/chromedp v0.9.5/go.mod h1:O5k0K2vA1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8=
-gorm.io/gorm v1.25.10 h1:2v3w4x5y6z7a8b9c0d1e2f3g4h5i6j7k8l9m0n1o2p3=
-gorm.io/gorm v1.25.10/go.mod h1:m1m2m3m4m5m6m7m8m9m0m1m2m3m4m5m6m7m8m9m0m1=
-gorm.io/driver/sqlite v1.5.5 h1:yP8v3m3q1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8=
-gorm.io/driver/sqlite v1.5.5/go.mod h1:z1z2z3z4z5z6z7z8z9z0z1z2z3z4z5z6z7z8z9z0z1=
-github.com/xuri/excelize/v2 v2.8.1 h1:yP8v3m3q1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8=
-github.com/xuri/excelize/v2 v2.8.1/go.mod h1:z1z2z3z4z5z6z7z8z9z0z1z2z3z4z5z6z7z8z9z0z1=
-`,
-  },
-  {
     path: 'main.go',
     name: 'main.go',
     folder: 'Gốc (Root)',
@@ -755,15 +735,18 @@ func (ui *AppUI) Run() {
 3. gorm.io/gorm + sqlite (Database local)
 4. github.com/xuri/excelize/v2 (Export Excel .xlsx 3 sheets)
 
-## 🚀 Cách khắc phục lỗi 'missing go.sum entry' & Chạy ứng dụng
+## 🚀 Khắc phục lỗi Checksum Mismatch & Chạy Ứng Dụng:
 \`\`\`bash
-# Bước 1: Tải dependencies và tự động tạo lại go.sum
+# 1. Xóa file go.sum cũ (nếu có):
+rm -f go.sum
+
+# 2. Để Go tải trực tiếp từ Go Proxy chính thức và tạo go.sum chuẩn:
 go mod tidy
 
-# Bước 2: Chạy ứng dụng Desktop
+# 3. Chạy Desktop GUI Fyne v2:
 go run main.go
 
-# Bước 3: Hoặc chạy chế độ dòng lệnh (CLI Headless)
+# 4. Hoặc chạy chế độ CLI Headless:
 go run main.go -cli -url https://tiki.vn -export BaoCao_SEO_UX.xlsx
 \`\`\`
 `,
